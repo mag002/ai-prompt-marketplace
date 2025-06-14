@@ -7,14 +7,21 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { Textarea } from "./ui/textarea"
+import { useRouter } from "next/navigation"
+import { useTransition } from "react"
 
+
+interface PromptFormProps { initialValue?: { id: string, title: string, content: string }, isEdit?: boolean }
 
 
 // server component => ko co state
-export function PromptForm() {
+export function PromptForm({ initialValue, isEdit }: PromptFormProps) {
+    const router = useRouter()
+    const [isPending, startTransition] = useTransition();
+
     const form = useForm<PromptSchema>({
         resolver: zodResolver(promptSchema),
-        defaultValues: {
+        defaultValues: initialValue ? initialValue : {
             title: '',
             content: '',
             //tags
@@ -26,7 +33,45 @@ export function PromptForm() {
         // test dummyjson
         // => use toast of shadcn(sonner) to inform the status
         console.log(values)
+        if (isEdit) {
+            console.log("CALL UPDATE")
+        } else {
+            // call api
+            // submit => loading => result
+            console.log("CALL CREATE")
+            startTransition(async () => {
+                await new Promise(resolve => setTimeout(resolve, 3000))
+                const res = await fetch("/api/prompt", {
+                    method: "POST",
+                    body: JSON.stringify(values),
+                    headers: { "Content-Type": "application/json" }
+                })
+                console.log()
+                if (res.ok) {
+
+                    alert("Create Prompt Successfully!");
+                    form.reset(); // reset form
+                } else {
+                    alert("CREATE FAILED")
+                }
+            })
+        }
+        // CREATE => POST /posts
+        // EDIT => PUT /posts/id
     }
+
+    const handleCancel = () => {
+        if (isEdit && initialValue) {
+            router.push(`/prompt/${initialValue.id}`)
+        } else {
+            //
+            router.push(`/explore`)
+        }
+    }
+
+    // dropdown 3 options
+    // navigate sang trang nafo => drop
+    // momo/credit card/QR
 
     return <Form {...form} >
         <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -61,8 +106,8 @@ export function PromptForm() {
                 }
             />
             <div className="flex w-full mt-3 justify-end gap-5">
-                <Button variant="secondary">Cancel</Button>
-                <Button type="submit">Create</Button>
+                <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
+                <Button disabled={isPending} type="submit">{isEdit ? 'Update' : 'Create'}</Button>
             </div>
         </form>
     </Form>

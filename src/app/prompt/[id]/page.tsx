@@ -1,5 +1,7 @@
+import { DeletePromptButton } from "@/components/DeletePromptButton";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 // server component
@@ -38,6 +40,11 @@ export default async function PromptDetail({ params }: { params: { id: string } 
     console.log('data', data)
     // 17:30 | 20:30
     // dummy json get data
+
+    const handleDelete = () => {
+
+    }
+
     return <>
         <Breadcrumb>
             <BreadcrumbList>
@@ -56,7 +63,17 @@ export default async function PromptDetail({ params }: { params: { id: string } 
         </Breadcrumb>
         <div className="rounded shadow p-3 mt-5">
             <div className="max-w-3xl mx-auto space-y-4">
-                <h1 className="text-2xl font-bold">{data.title}</h1>
+                <div className="flex justify-between">
+                    <h1 className="text-2xl font-bold">{data.title}</h1>
+                    <div className="flex gap-3">
+                        <Button asChild>
+                            <Link href={`/prompt/${data.id}/edit`}>
+                                Edit
+                            </Link>
+                        </Button>
+                        <DeletePromptButton id={id} />
+                    </div>
+                </div>
                 <div className="flex gap-3">
                     {
                         data.tags.map((item: string) => {
