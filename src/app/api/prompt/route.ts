@@ -31,3 +31,18 @@ export async function POST(req: NextRequest) {
 
 // 18:47 | 21:47
 // terminal => folder structure => markdown structure 
+
+// page login
+
+// api login
+// user id | password
+/**
+ *     
+  <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-sm mx-auto py-10 space-y-4">
+      <Input placeholder="Email" {...form.register("email")} />
+      <Input type="password" placeholder="Mật khẩu" {...form.register("password")} />
+      <Button type="submit" className="w-full">Đăng nhập</Button>
+    </form>
+
+    17:22 | 20:22
+ */
