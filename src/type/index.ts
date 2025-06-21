@@ -3,4 +3,6 @@ export interface Prompt {
     title: string;
     body: string;
     userId: number;
+    tags: string[];
+    createdAt: string;
 }

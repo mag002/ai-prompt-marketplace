@@ -29,3 +29,15 @@ export default async function PromptLayout({ children }: { children: ReactNode }
         {children}
     </>
 }
+
+
+/**
+ * Debounce
+ * SSR | SGR
+ * DOCKER
+ * Deploy
+ * Axios
+ * Redux
+ * 
+ * Target:full project first then others
+ */

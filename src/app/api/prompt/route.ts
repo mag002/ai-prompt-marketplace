@@ -1,15 +1,21 @@
-import { addPrompt, prompts } from "@/lib/db";
+import { addPrompt, getPrompts } from "@/lib/db";
 import { promptSchema } from "@/schemas/prompt-schema";
 import { NextRequest, NextResponse } from "next/server"
-export async function GET() {
+export async function GET(req: NextRequest) {
     // request
     // response
     // request param
     // param => lib/db => get prompt by id => return prompt
 
-    console.log("DEBUG", prompts)
+    const { searchParams } = new URL(req.url)
+    const query = searchParams.get('query') || ""
+    const tags = searchParams.getAll('tag') || ""
+    console.log("DEBUG", tags)
+    const prompts = getPrompts(query)
     return NextResponse.json(prompts)
 }
+
+
 
 export async function POST(req: NextRequest) {
     try {
