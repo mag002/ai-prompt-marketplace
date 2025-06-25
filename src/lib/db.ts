@@ -611,7 +611,7 @@ export function getPrompt(id: number) {
     return prompts.find(p => p.id === id);
 }
 
-export function getPrompts(query: string) {
+export function getPrompts(query: string, limit = 10, page = 1) {
     let returnPrompts = [...prompts];
     if (query) {
         returnPrompts = returnPrompts.filter(p => {
@@ -619,9 +619,13 @@ export function getPrompts(query: string) {
         })
     }
 
-    // if(tags){
-    // }
-    return returnPrompts
+    const total = returnPrompts.length;
+    const start = (page - 1) * limit;
+    const end = page * limit;
+
+    const pagedPrompts = returnPrompts.slice(start, end);
+
+    return { pagedPrompts, total }
 
 }
 

@@ -10,9 +10,16 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const query = searchParams.get('query') || ""
     const tags = searchParams.getAll('tag') || ""
-    console.log("DEBUG", tags)
-    const prompts = getPrompts(query)
-    return NextResponse.json(prompts)
+    const limit = Number(searchParams.getAll('limit')) || 10
+    const page = Number(searchParams.getAll('page')) || 1
+    const { pagedPrompts, total } = getPrompts(query, limit, page)
+    return NextResponse.json({ data: pagedPrompts, total })
+
+
+    // phan trang 1,2,3,4,..,5
+    // infinite scroll
+    // total=200, page=2, limit=20
+    // limit=20, page=2
 }
 
 
