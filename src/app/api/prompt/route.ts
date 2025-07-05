@@ -1,6 +1,7 @@
 import { addPrompt, getPrompts } from "@/lib/db";
 import { promptSchema } from "@/schemas/prompt-schema";
 import { NextRequest, NextResponse } from "next/server"
+
 export async function GET(req: NextRequest) {
     // request
     // response
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
     const { pagedPrompts, total } = getPrompts(query, limit, page)
     return NextResponse.json({ data: pagedPrompts, total })
 
-
+    // nodejs
     // phan trang 1,2,3,4,..,5
     // infinite scroll
     // total=200, page=2, limit=20

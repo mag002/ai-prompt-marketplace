@@ -1,13 +1,16 @@
 import { getPrompt } from "@/lib/db";
+import { auth } from "@/lib/jwt";
 import { NextRequest, NextResponse } from "next/server"
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     // request
     // response
     // request param
     // param => lib/db => get prompt by id => return prompt
 
-
+    console.log("====RUN")
     const { id } = await params;
+    const decoded = await auth(req);
+    console.log("DECODED", decoded)
     const parsedId = Number(id)
     if (isNaN(parsedId)) {
         return NextResponse.json({ message: "ID invalid" }, { status: 400 })
