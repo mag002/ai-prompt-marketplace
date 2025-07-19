@@ -1,7 +1,35 @@
-import { bookmarks } from "@/lib/bookmarks";
+// import { bookmarks } from "@/lib/bookmarks";
+import { getPrompt } from "@/lib/db";
 import { auth } from "@/lib/jwt";
+import { readDB, writeDB } from "@/lib/mock/json-db";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+
+export async function DELETE(req: NextRequest) {
+    try {
+        const decoded = await auth(req)
+
+        if (!decoded) {
+            return NextResponse.json({ message: "Unauthenticated!" }, { status: 403 })
+        }
+
+        const { id: userId } = decoded;
+        const body = await req.json();
+        const { promptId } = body;
+        // 17:35 | 20:35
+        const bookmarks = readDB("bookmarks")
+        console.log(bookmarks)
+        // readDB => bookmarks => update by user-id
+        bookmarks[userId] = bookmarks[userId].filter((b:number)=>b!==Number(promptId))
+        writeDB("bookmarks", bookmarks)
+        return NextResponse.json({ success: true })
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json({ error: "Server error" }, { status: 500 })
+    }
+}
+
+
 
 export async function POST(req: NextRequest) {
     try {
@@ -22,15 +50,33 @@ export async function POST(req: NextRequest) {
         const { id: userId } = decoded;
         const body = await req.json();
         const { promptId } = body;
+        // 17:35 | 20:35
+        const bookmarks = readDB("bookmarks")
         console.log(bookmarks)
+        // readDB => bookmarks => update by user-id
         bookmarks[userId] = bookmarks[userId] || [];
         if (!bookmarks[userId].includes(promptId)) {
             bookmarks[userId].push(promptId)
+            writeDB("bookmarks", bookmarks)
         }
-
         return NextResponse.json({ success: true })
     } catch (error) {
         console.log(error);
         return NextResponse.json({ error: "Server error" }, { status: 500 })
     }
 }
+
+
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+    const decoded = await auth(req);
+    if (!decoded) {
+        return NextResponse.json({ message: "Unauthenticated!" }, { status: 403 })
+    }
+    const bookmarks = readDB('bookmarks')
+    const bookmarked = bookmarks[decoded.id] || [];
+    const bookmarkedPrompts = bookmarked.map((promptId:number) => {
+        return getPrompt(promptId)
+    })
+    return NextResponse.json({ bookmarkedPrompts})
+}
+//DELETE to un bookmark

@@ -1,6 +1,7 @@
 // import { bookmarks } from "@/lib/bookmarks";
 import { auth } from "@/lib/jwt";
 import { readDB } from "@/lib/mock/json-db";
+import { findUser } from "@/lib/users";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -8,8 +9,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     if (!decoded) {
         return NextResponse.json({ message: "Unauthenticated!" }, { status: 403 })
     }
-    const bookmarks = readDB('bookmarks')
-    const bookmarked = bookmarks[decoded.id] || [];
-    const { id } = await params;
-    return NextResponse.json({ bookmarked: bookmarked.includes(Number(id)) })
+    const user = findUser(decoded.id);
+    return NextResponse.json({  user })
 }

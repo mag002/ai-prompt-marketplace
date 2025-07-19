@@ -1,5 +1,5 @@
 import { signToken } from "@/lib/jwt";
-import { findUser } from "@/lib/users";
+import { checkUser } from "@/lib/users";
 import { loginSchema } from "@/schemas/login-schema";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: result.error.flatten() }, { status: 400 })
     }
 
-    const user = findUser(result.data.username, result.data.password);
+    const user = checkUser(result.data.username, result.data.password);
     if (!user) {
         return NextResponse.json({ message: "Login Failed!" }, { status: 404 })
     }

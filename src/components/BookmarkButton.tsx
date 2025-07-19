@@ -20,12 +20,15 @@ export default function BookmarkButton({ promptId }: { promptId: string }) {
     }
 
     const handleClick = async () => {
+        // check bookmarked to handle post or delete
+        // 17:56 | 20:56
+        const method = saved ? "DELETE" : "POST"
         const res = await fetch("/api/bookmark", {
-            method: "POST",
+            method,
             body: JSON.stringify({ promptId })
         })
         if (res.ok) {
-            setSaved(true)
+            setSaved(!saved)
         } else {
             alert("ERROR!")
         }
